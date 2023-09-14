@@ -1,0 +1,32 @@
+package com.javatpoint.controller;
+
+import com.javatpoint.model.SignInRequest;
+import com.javatpoint.model.User;
+import com.javatpoint.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/api/login")
+public class UserController {
+	private final UserService userService;
+
+	@Autowired
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
+
+	@PostMapping("/user/signin")
+	public ResponseEntity<?> register(@RequestBody SignInRequest request) {
+	    boolean user = userService.authenticateUser(request.getUsername(),request.getPassword());
+
+	    if (user == true ) {
+	        return ResponseEntity.ok("SignIn successful");
+	    } else {
+	        return ResponseEntity.badRequest().body("SignIn failed: User not found or not unique");
+	    }
+	}
+
+}

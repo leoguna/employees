@@ -1,0 +1,29 @@
+package com.javatpoint;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.stereotype.Component;
+
+import com.javatpoint.uti.JwtUtil;
+
+import io.jsonwebtoken.Claims;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@EnableSwagger2
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@Component
+@EntityScan("com.javatpoint.model")
+public class SpringBootCrudOperationApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootCrudOperationApplication.class, args);
+        JwtUtil jutil=new JwtUtil();
+        String token=jutil.generateToken("id", "leo", "leo12");
+        System.out.println(token);
+        Claims c=jutil.getClaims("leo12", token);
+        System.out.println(c.getId());
+        System.out.println(c.getSubject());
+        
+    }
+}

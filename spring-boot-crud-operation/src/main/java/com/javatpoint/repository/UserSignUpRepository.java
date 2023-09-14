@@ -1,0 +1,18 @@
+package com.javatpoint.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.javatpoint.model.UserSignUp;
+
+@Repository
+public interface UserSignUpRepository extends CrudRepository<UserSignUp, Integer> {
+	UserSignUp findByUsername(String username);
+
+	@Query("SELECT usu FROM UserSignUp usu WHERE usu.firstname LIKE :prefix%")
+	List<UserSignUp> findUsersByPrefix(@Param("prefix") String prefix);
+}

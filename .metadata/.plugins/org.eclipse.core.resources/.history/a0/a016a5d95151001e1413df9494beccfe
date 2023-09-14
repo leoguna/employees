@@ -1,0 +1,49 @@
+package com.javatpoint.service;
+
+import com.javatpoint.model.User;
+import com.javatpoint.model.UserSignUp;
+import com.javatpoint.repository.UserRepository;
+import com.javatpoint.repository.UserSignUpRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+	private final UserSignUpRepository userSignupRepository;
+	private final UserRepository userRepository;
+	private final BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	public UserService(UserSignUpRepository userSignupRepository, UserRepository userRepository,
+			BCryptPasswordEncoder passwordEncoder) {
+		this.userSignupRepository = userSignupRepository;
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
+
+	public User convertSignupToUser(String username) {
+		UserSignUp signupData = userSignupRepository.findByUsername(username);
+		if (signupData != null) {
+			User user = new User();
+			user.setUsername(signupData.getUsername());
+			user.setEmail(signupData.getEmail());
+			String hashedPassword = passwordEncoder.encode(signupData.getPwd());
+			user.setPassword(hashedPassword);
+			userRepository.save(user);
+			return user;
+		}
+		return null;
+	}
+
+	public boolean authenticateUser(String username, String password) {
+	    UserSignUp userSignUp = userSignupRepository.findByUsername(username);
+	    if (userSignUp != null) {
+	        // Use the hashed password stored in the UserSignUp entity for comparison
+	        String hashedPassword = userSignUp.getPwd();
+	        return passwordEncoder.matches(password, hashedPassword);
+	    }
+	    return false;
+	}
+
+}

@@ -1,0 +1,5 @@
+package com.javatpoint.uti;
+
+public class JwtUtil {
+
+}
