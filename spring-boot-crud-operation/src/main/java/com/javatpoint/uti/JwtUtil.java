@@ -15,7 +15,7 @@ public class JwtUtil {
 	public String generateToken(String subject, String key) {
 		return Jwts.builder().setId("signin").setSubject(subject).setIssuer("leo")
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(100)))
+				.setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1000)))
 				.signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encode(key.getBytes())).compact();
 	}
 
